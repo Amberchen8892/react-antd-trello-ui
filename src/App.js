@@ -1,13 +1,10 @@
-import { useState, useCallback } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-
+import { useState } from "react";
+import { DragDropContext, Droppable} from "react-beautiful-dnd";
+import TrelloList from './components/TrelloList';
 // ant core
 import {
-  Card,
   Avatar,
-  Tooltip,
   Button,
-  Popconfirm,
   Modal,
   Input,
   Form,
@@ -15,18 +12,9 @@ import {
 } from "antd";
 
 // ant icons
-import {
-  DeleteOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-
-// components
-import SingleCard from "./components/SingleCard";
-
-//data
-import data from './data.js'
-
-const { Meta } = Card;
+import {PlusOutlined } from "@ant-design/icons";
+// context
+import {useAppContext} from './context/AppContext';
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -42,7 +30,7 @@ function App() {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
+  const {trello,onDragList, onDragCard} = useAppContext();
   const handleSubmit = (values) => {
     console.log("values: ", values);
 
@@ -57,61 +45,33 @@ function App() {
     console.log(`selected ${value}`);
   };
 
-  function handleViewDetail() {
-    Modal.info({
-      title: "Card Detail",
-      content: (
-        <>
-          <div>
-            <h4>Title</h4>
-            <div>This is title</div>
-          </div>
-          <br />
-          <div>
-            <h4>Description</h4>
-            <div>This is description</div>
-          </div>
-          <br />
-          <div>
-            <h4>Member</h4>
-            <div>
-              <Avatar.Group>
-                <Tooltip title="Tony Nguyen" placement="top">
-                  <Avatar src="https://picsum.photos/265/160" />
-                </Tooltip>
-                <Tooltip title="Phuong Nguyen" placement="top">
-                  <Avatar src="https://picsum.photos/265/160" />
-                </Tooltip>
-              </Avatar.Group>
-            </div>
-          </div>
-          <br />
-          <div>
-            <h4>Status</h4>
-            <div>New</div>
-          </div>
-        </>
-      ),
-      onOk() {},
-    });
-  }
-
   // using useCallback is optional
-  const onBeforeCapture = useCallback((result) => {
-    console.log("onBeforeCapture: ", result);
-  }, []);
-  const onBeforeDragStart = useCallback((result) => {
-    console.log("onBeforeDragStart: ", result);
-  }, []);
-  const onDragStart = useCallback((result) => {
-    console.log("onBeforeDragStart: ", result);
-  }, []);
-  const onDragUpdate = useCallback((result) => {
-    console.log("onBeforeDragStart: ", result);
-  }, []);
-  const onDragEnd = useCallback((result) => {
-    console.log("onBeforeDragStart: ", result);
-  }, []);
+  // const onBeforeCapture = useCallback((result) => {
+  //   console.log("onBeforeCapture: ", result);
+  // }, []);
+  // const onBeforeDragStart = useCallback((result) => {
+  //   console.log("onBeforeDragStart: ", result);
+  // }, []);
+  // const onDragStart = useCallback((result) => {
+  //   console.log("onBeforeDragStart: ", result);
+  // }, []);
+  // const onDragUpdate = useCallback((result) => {
+  //   console.log("onBeforeDragStart: ", result);
+  // }, []);
+  const onDragEnd = (result) => {
+    if(!result.destination){
+      console.log("no updated destination");
+      return;
+    }
+    if(result.type === "LIST"){
+      onDragList(result);
+      return;
+    }
+    if(result.type === "CARD"){
+      onDragCard(result);
+      return;
+    }
+  };
 
   return (
     <>
@@ -129,10 +89,10 @@ function App() {
       <main>
         <div className="container">
           <DragDropContext
-            onBeforeCapture={onBeforeCapture}
-            onBeforeDragStart={onBeforeDragStart}
-            onDragStart={onDragStart}
-            onDragUpdate={onDragUpdate}
+            // onBeforeCapture={onBeforeCapture}
+            // onBeforeDragStart={onBeforeDragStart}
+            // onDragStart={onDragStart}
+            // onDragUpdate={onDragUpdate}
             onDragEnd={onDragEnd}
           >
             <Droppable
@@ -146,103 +106,19 @@ function App() {
                   className="listContainer"
                   {...provided.droppableProps}
                 >
-                  {data.columns.map(( listId,listIndex) => {
-                    const listItems = data.lists[listId];
-                    console.log(listItems);
+                  {trello.columns.map((listId, listIndex) => {
+                    const listItems = trello.lists[listId];
+                    const cards = listItems.cards.map(cardId => trello.cards[cardId])
                     return (
-                      <Draggable draggableId={String(listId)} index={listIndex}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <Card
-                          title={listItems.title}
-                          className="cardList"
-                          extra={
-                            <>
-                              <Tooltip title="Add a card">
-                                <Button
-                                  shape="circle"
-                                  icon={<PlusOutlined />}
-                                  onClick={() => setOpen(true)}
-                                />
-                              </Tooltip>
-
-                              <Popconfirm
-                                title="Delete the list"
-                                description="Are you sure to delete this list?"
-                                onConfirm={() => {}}
-                                onCancel={() => {}}
-                                okText="Yes"
-                                cancelText="No"
-                                className="ml-10"
-                              >
-                                <Tooltip title="Delete this list">
-                                  <Button
-                                    shape="circle"
-                                    icon={<DeleteOutlined />}
-                                  />
-                                </Tooltip>
-                              </Popconfirm>
-                            </>
-                          }
-                        >
-                          <SingleCard />
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
-
-                    )
-
+                     <TrelloList 
+                     cards={cards}
+                     title={listItems.title}
+                     index={listIndex}
+                     listId={listItems.id}
+                     key={listItems.id}
+                     />
+                    );
                   })}
-                  
-                  <Draggable draggableId="draggable-2" index={1}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <Card
-                          title="List 1"
-                          className="cardList"
-                          extra={
-                            <>
-                              <Tooltip title="Add a card">
-                                <Button
-                                  shape="circle"
-                                  icon={<PlusOutlined />}
-                                  onClick={() => setOpen(true)}
-                                />
-                              </Tooltip>
-
-                              <Popconfirm
-                                title="Delete the list"
-                                description="Are you sure to delete this list?"
-                                onConfirm={() => {}}
-                                onCancel={() => {}}
-                                okText="Yes"
-                                cancelText="No"
-                                className="ml-10"
-                              >
-                                <Tooltip title="Delete this list">
-                                  <Button
-                                    shape="circle"
-                                    icon={<DeleteOutlined />}
-                                  />
-                                </Tooltip>
-                              </Popconfirm>
-                            </>
-                          }
-                        >
-                          <SingleCard />
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
 
                   {provided.placeholder}
                   <Button type="text">

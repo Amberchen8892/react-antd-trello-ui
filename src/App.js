@@ -31,6 +31,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const {trello,onDragList, onDragCard} = useAppContext();
+  console.log(trello)
   const handleSubmit = (values) => {
     console.log("values: ", values);
 

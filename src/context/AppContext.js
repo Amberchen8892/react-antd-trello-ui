@@ -19,8 +19,47 @@ function onDragList (result) {
 
 }
 function onDragCard (result) {
-    console.log('onDragCard', result)
-
+    console.log('onDragCard', result);
+    const {source, destination} = result;
+    const sourceCards = [...trello.lists[source.droppableId].cards];
+    const destinationCards = [...trello.lists[destination.droppableId].cards];
+    const sourceCard = sourceCards.splice(source.index,1)[0];
+    if(source.droppableId === destination.droppableId ){
+        sourceCards.splice(destination.index, 0 , sourceCard);
+        setTrello(prevState => ({
+            ...prevState,
+            lists:{
+                ...prevState.lists,
+                [source.droppableId]:{
+                    ...prevState.lists[source.droppableId],
+                    cards:sourceCards,
+                },
+    
+            }
+    
+        }))
+    } else {
+        destinationCards.splice(destination.index, 0 , sourceCard);
+        setTrello(prevState => ({
+            ...prevState,
+            lists:{
+                ...prevState.lists,
+                [source.droppableId]:{
+                    ...prevState.lists[source.droppableId],
+                    cards: sourceCards,
+                },
+                [destination.droppableId]:{
+                    ...prevState.lists[destination.droppableId],
+                    cards: destinationCards,
+                },
+    
+            }
+    
+        }))
+    }
+   
+    console.log("sourceCards after",sourceCards)
+    console.log("destinationCardsafter",destinationCards)
 }
   return (
     <AppContext.Provider value={{ trello, onDragList, onDragCard }}>

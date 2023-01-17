@@ -38,7 +38,7 @@
       },
       "card-2": {
         id: "card-2",
-        title: "card 1",
+        title: "card 2",
         description: "",
         member: [
           {
@@ -50,7 +50,7 @@
       },
       "card-3":  {
         id: "card-3",
-        title: "card 1",
+        title: "card 3",
         description: "",
         member: [
           {

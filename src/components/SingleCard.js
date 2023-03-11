@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Draggable } from "react-beautiful-dnd";
-import { Card, Avatar, Tooltip, Popconfirm } from "antd";
+import React, { useState } from 'react';
+import { Draggable } from 'react-beautiful-dnd';
+import { Card, Avatar, Tooltip, Popconfirm } from 'antd';
 import {
   EditOutlined,
   DeleteOutlined,
   AntDesignOutlined,
   UserOutlined,
   FileTextOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 //context
-import { useAppContext } from "../context/AppContext";
-import AddModel from "./AddModel";
+import { useAppContext } from '../context/AppContext';
+import AddModel from './AddModel';
 const { Meta } = Card;
 
-function SingleCard({ index, cardItem, listId }) {
+function SingleCard({ index, cardItem, listId, handleViewDetail }) {
   const [open, setOpen] = useState(false);
   const { deleteCard } = useAppContext();
   const onCloseModal = () => {
@@ -31,13 +31,24 @@ function SingleCard({ index, cardItem, listId }) {
           >
             <Card
               className="cardItem"
-              cover={<img alt="example" src="https://picsum.photos/265/160" />}
+              cover={
+                <img
+                  alt="example"
+                  src="https://picsum.photos/265/160"
+                />
+              }
               actions={[
                 <Tooltip title="View">
-                  <FileTextOutlined key="view" />
+                  <FileTextOutlined
+                    key="view"
+                    onClick={handleViewDetail}
+                  />
                 </Tooltip>,
                 <Tooltip title="Edit">
-                  <EditOutlined key="edit" onClick={() => setOpen(true)} />
+                  <EditOutlined
+                    key="edit"
+                    onClick={() => setOpen(true)}
+                  />
                 </Tooltip>,
                 <Popconfirm
                   title="Delete the card"
@@ -64,22 +75,24 @@ function SingleCard({ index, cardItem, listId }) {
                       maxPopoverTrigger="click"
                       size="large"
                       maxStyle={{
-                        color: "#f56a00",
-                        backgroundColor: "#fde3cf",
-                        cursor: "pointer",
+                        color: '#f56a00',
+                        backgroundColor: '#fde3cf',
+                        cursor: 'pointer',
                       }}
                       className="avatarGroup"
                     >
                       <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                      <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
+                      <Avatar style={{ backgroundColor: '#f56a00' }}>
+                        K
+                      </Avatar>
                       <Tooltip title="Ant User" placement="top">
                         <Avatar
-                          style={{ backgroundColor: "#87d068" }}
+                          style={{ backgroundColor: '#87d068' }}
                           icon={<UserOutlined />}
                         />
                       </Tooltip>
                       <Avatar
-                        style={{ backgroundColor: "#1890ff" }}
+                        style={{ backgroundColor: '#1890ff' }}
                         icon={<AntDesignOutlined />}
                       />
                     </Avatar.Group>

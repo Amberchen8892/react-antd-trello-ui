@@ -1,28 +1,35 @@
-import React, {useState} from "react";
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import React, { useState } from 'react';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 // ant core
-import { Card, Tooltip, Button, Popconfirm, Modal, Avatar } from "antd";
+import {
+  Card,
+  Tooltip,
+  Button,
+  Popconfirm,
+  Modal,
+  Avatar,
+} from 'antd';
 
 // ant icons
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 // components
-import SingleCard from "./SingleCard";
-import AddModel from "./AddModel";
+import SingleCard from './SingleCard';
+import AddModel from './AddModel';
 
 //context
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from '../context/AppContext';
 
 function TrelloList({ index, listId, title, cards }) {
   const [open, setOpen] = useState(false);
   const { deleteList } = useAppContext();
   const onCloseModal = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
   function handleViewDetail() {
     Modal.info({
-      title: "Card Detail",
+      title: 'Card Detail',
       content: (
         <>
           <div>
@@ -69,7 +76,10 @@ function TrelloList({ index, listId, title, cards }) {
           >
             <Droppable droppableId={String(listId)} type="CARD">
               {(provided, snapshot) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   <Card
                     title={title}
                     className="cardList"
@@ -93,7 +103,10 @@ function TrelloList({ index, listId, title, cards }) {
                           className="ml-10"
                         >
                           <Tooltip title="Delete this list">
-                            <Button shape="circle" icon={<DeleteOutlined />} />
+                            <Button
+                              shape="circle"
+                              icon={<DeleteOutlined />}
+                            />
                           </Tooltip>
                         </Popconfirm>
                       </>
@@ -106,6 +119,7 @@ function TrelloList({ index, listId, title, cards }) {
                           index={cardIndex}
                           cardItem={card}
                           listId={listId}
+                          handleViewDetail={handleViewDetail}
                         />
                       );
                     })}
@@ -172,7 +186,12 @@ function TrelloList({ index, listId, title, cards }) {
           </div>
         )}
       </Draggable>
-       <AddModel whichId={listId} onCloseModal={onCloseModal} open={open} isEdit={false}/>
+      <AddModel
+        whichId={listId}
+        onCloseModal={onCloseModal}
+        open={open}
+        isEdit={false}
+      />
     </>
   );
 }

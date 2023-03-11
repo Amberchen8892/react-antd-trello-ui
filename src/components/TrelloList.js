@@ -102,7 +102,7 @@ function TrelloList({ index, listId, title, cards }) {
                     {cards.map((card, cardIndex) => {
                       return (
                         <SingleCard
-                          key={cardIndex}
+                          key={card.id}
                           index={cardIndex}
                           cardItem={card}
                           listId={listId}

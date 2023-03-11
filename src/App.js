@@ -1,12 +1,12 @@
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import TrelloList from "./components/TrelloList";
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import TrelloList from './components/TrelloList';
 // ant core
-import { Button } from "antd";
+import { Button } from 'antd';
 
 // ant icons
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from '@ant-design/icons';
 // context
-import { useAppContext } from "./context/AppContext";
+import { useAppContext } from './context/AppContext';
 
 const options = [];
 for (let i = 10; i < 36; i++) {
@@ -17,6 +17,7 @@ for (let i = 10; i < 36; i++) {
 }
 
 function App() {
+  console.log('test');
   const { trello, onDragList, onDragCard, addList } = useAppContext();
 
   // using useCallback is optional
@@ -34,14 +35,14 @@ function App() {
   // }, []);
   const onDragEnd = (result) => {
     if (!result.destination) {
-      console.log("no updated destination");
+      console.log('no updated destination');
       return;
     }
-    if (result.type === "LIST") {
+    if (result.type === 'LIST') {
       onDragList(result);
       return;
     }
-    if (result.type === "CARD") {
+    if (result.type === 'CARD') {
       onDragCard(result);
       return;
     }
